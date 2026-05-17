@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-brand-graphite: #1F1F1F;
+  --color-brand-black: #111111;
+  --color-brand-copper: #C38A5A;
+  --color-brand-bone: #F5F2ED;
+  --color-brand-stone: #B8AEA3;
+
+  --color-background: var(--color-brand-bone);
+  --color-foreground: var(--color-brand-graphite);
+
+  --font-sans: var(--font-montserrat);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    -webkit-font-smoothing: antialiased;
+  }
+}
