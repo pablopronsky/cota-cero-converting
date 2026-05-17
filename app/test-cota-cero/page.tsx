@@ -122,11 +122,13 @@ export default function ScorecardPage() {
     const newAnswers = [...answers];
     newAnswers[questionIndx] = optionIdx;
     setAnswers(newAnswers);
+  };
 
-    if (questionIndx < questions.length - 1) {
-      setTimeout(() => {
-        setCurrentSlide(prev => prev + 1);
-      }, 300);
+  const handleNext = () => {
+    if (answers[currentSlide] === null || typeof answers[currentSlide] === 'undefined') return;
+    
+    if (currentSlide < questions.length - 1) {
+      setCurrentSlide(prev => prev + 1);
     } else {
       setIsCalculating(true);
       setTimeout(() => {
@@ -233,12 +235,13 @@ export default function ScorecardPage() {
             <button
               key={optIdx}
               onClick={() => handleAnswer(index, optIdx)}
-              className={`w-full text-left p-4 border transition-all duration-200 flex items-start gap-4 group rounded-md
+              className={`w-full text-left p-4 border transition-all duration-200 flex items-start gap-4 group rounded-md outline-none
                 ${isSelected(optIdx) 
-                  ? 'border-brand-copper bg-brand-copper/5 dark:bg-brand-copper/10' 
+                  ? 'border-brand-copper bg-brand-copper/5 dark:bg-brand-copper/10 ring-1 ring-brand-copper shadow-sm' 
                   : 'border-brand-graphite/20 dark:border-brand-bone/20 hover:border-brand-copper hover:bg-brand-graphite/5 dark:hover:bg-brand-bone/5'
                 }
               `}
+              aria-pressed={isSelected(optIdx)}
             >
               <div className={`w-6 h-6 shrink-0 rounded-full border text-[11px] font-bold flex items-center justify-center transition-colors
                  ${isSelected(optIdx) 
@@ -255,17 +258,22 @@ export default function ScorecardPage() {
           ))}
         </div>
 
-        <div className="mt-8 flex justify-between items-center">
-          {index > 0 ? (
-            <button 
-              onClick={handleBack}
-              className="text-sm text-brand-graphite/60 dark:text-brand-bone/60 hover:text-brand-graphite dark:hover:text-brand-bone flex items-center gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" /> Anterior
-            </button>
-          ) : (
-            <div />
-          )}
+        <div className="mt-8 pt-6 border-t border-brand-graphite/10 dark:border-brand-bone/10 flex justify-between items-center">
+          <button 
+            onClick={handleBack}
+            disabled={index === 0}
+            className={`text-sm flex items-center gap-2 px-4 py-2 transition-opacity ${index === 0 ? 'opacity-0 pointer-events-none' : 'text-brand-graphite/60 dark:text-brand-bone/60 hover:text-brand-graphite dark:hover:text-brand-bone'}`}
+          >
+            <ArrowLeft className="w-4 h-4" /> Anterior
+          </button>
+          
+          <button
+            onClick={handleNext}
+            disabled={answers[index] === null}
+            className={`text-sm flex items-center gap-2 px-6 py-2.5 rounded-md font-medium transition-all ${answers[index] !== null ? 'bg-brand-copper text-brand-bone hover:bg-[#b07b4e] shadow-md hover:shadow-lg hover:-translate-y-0.5' : 'bg-brand-graphite/10 dark:bg-brand-bone/10 text-brand-graphite/40 dark:text-brand-bone/40 cursor-not-allowed'}`}
+          >
+            {index === questions.length - 1 ? 'Ver Resultado' : 'Siguiente'} <ChevronRight className="w-4 h-4 ml-1" />
+          </button>
         </div>
       </motion.div>
     );
@@ -355,51 +363,64 @@ export default function ScorecardPage() {
           </h3>
           
           <div className="space-y-6">
-            <div className="flex items-center gap-4">
-              <div className="text-sm text-brand-graphite/70 dark:text-brand-bone/70 w-32 shrink-0">Madurez del proyecto</div>
-              <div className="flex-1 h-1.5 bg-brand-graphite/10 dark:bg-brand-bone/10 rounded-full">
-                <motion.div initial={{ width: 0 }} animate={{ width: `${dim1}%` }} transition={{ duration: 1, delay: 0.1 }} className="h-full bg-brand-copper rounded-full" />
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <div className="text-sm text-brand-graphite/70 dark:text-brand-bone/70 sm:w-40 shrink-0">Madurez del proyecto</div>
+              <div className="flex items-center gap-4 flex-1">
+                <div className="flex-1 h-2 bg-brand-graphite/10 dark:bg-brand-bone/10 rounded-full overflow-hidden">
+                  <motion.div initial={{ width: 0 }} animate={{ width: `${dim1}%` }} transition={{ duration: 1, delay: 0.1 }} className="h-full bg-brand-copper rounded-full" />
+                </div>
+                <div className="text-sm font-medium w-10 text-right">{dim1}%</div>
               </div>
-              <div className="text-sm font-medium w-10 text-right">{dim1}%</div>
             </div>
             
-            <div className="flex items-center gap-4">
-              <div className="text-sm text-brand-graphite/70 dark:text-brand-bone/70 w-32 shrink-0">Alcance e idoneidad</div>
-              <div className="flex-1 h-1.5 bg-brand-graphite/10 dark:bg-brand-bone/10 rounded-full">
-                <motion.div initial={{ width: 0 }} animate={{ width: `${dim2}%` }} transition={{ duration: 1, delay: 0.2 }} className="h-full bg-brand-copper rounded-full" />
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <div className="text-sm text-brand-graphite/70 dark:text-brand-bone/70 sm:w-40 shrink-0">Alcance e idoneidad</div>
+              <div className="flex items-center gap-4 flex-1">
+                <div className="flex-1 h-2 bg-brand-graphite/10 dark:bg-brand-bone/10 rounded-full overflow-hidden">
+                  <motion.div initial={{ width: 0 }} animate={{ width: `${dim2}%` }} transition={{ duration: 1, delay: 0.2 }} className="h-full bg-brand-copper rounded-full" />
+                </div>
+                <div className="text-sm font-medium w-10 text-right">{dim2}%</div>
               </div>
-              <div className="text-sm font-medium w-10 text-right">{dim2}%</div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="text-sm text-brand-graphite/70 dark:text-brand-bone/70 w-32 shrink-0">Valoración técnica</div>
-              <div className="flex-1 h-1.5 bg-brand-graphite/10 dark:bg-brand-bone/10 rounded-full">
-                <motion.div initial={{ width: 0 }} animate={{ width: `${dim3}%` }} transition={{ duration: 1, delay: 0.3 }} className="h-full bg-brand-copper rounded-full" />
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <div className="text-sm text-brand-graphite/70 dark:text-brand-bone/70 sm:w-40 shrink-0">Valoración técnica</div>
+              <div className="flex items-center gap-4 flex-1">
+                <div className="flex-1 h-2 bg-brand-graphite/10 dark:bg-brand-bone/10 rounded-full overflow-hidden">
+                  <motion.div initial={{ width: 0 }} animate={{ width: `${dim3}%` }} transition={{ duration: 1, delay: 0.3 }} className="h-full bg-brand-copper rounded-full" />
+                </div>
+                <div className="text-sm font-medium w-10 text-right">{dim3}%</div>
               </div>
-              <div className="text-sm font-medium w-10 text-right">{dim3}%</div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="text-sm text-brand-graphite/70 dark:text-brand-bone/70 w-32 shrink-0">Claridad decisional</div>
-              <div className="flex-1 h-1.5 bg-brand-graphite/10 dark:bg-brand-bone/10 rounded-full">
-                <motion.div initial={{ width: 0 }} animate={{ width: `${dim4}%` }} transition={{ duration: 1, delay: 0.4 }} className="h-full bg-brand-copper rounded-full" />
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <div className="text-sm text-brand-graphite/70 dark:text-brand-bone/70 sm:w-40 shrink-0">Claridad decisional</div>
+              <div className="flex items-center gap-4 flex-1">
+                <div className="flex-1 h-2 bg-brand-graphite/10 dark:bg-brand-bone/10 rounded-full overflow-hidden">
+                  <motion.div initial={{ width: 0 }} animate={{ width: `${dim4}%` }} transition={{ duration: 1, delay: 0.4 }} className="h-full bg-brand-copper rounded-full" />
+                </div>
+                <div className="text-sm font-medium w-10 text-right">{dim4}%</div>
               </div>
-              <div className="text-sm font-medium w-10 text-right">{dim4}%</div>
             </div>
           </div>
 
           <div className="h-px bg-brand-graphite/10 dark:bg-brand-bone/10 my-8" />
 
-          <div className="flex items-center gap-4">
-            <div className="text-sm font-bold text-brand-graphite dark:text-brand-bone w-32 shrink-0">Score total</div>
-            <div className="flex-1 h-1.5 bg-brand-graphite/10 dark:bg-brand-bone/10 rounded-full">
-              <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1.5, ease: "easeOut" }} className="h-full bg-brand-copper rounded-full" />
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <div className="text-sm font-bold text-brand-graphite dark:text-brand-bone sm:w-40 shrink-0">Score total</div>
+            <div className="flex items-center gap-4 flex-1">
+              <div className="flex-1 h-2 bg-brand-graphite/10 dark:bg-brand-bone/10 rounded-full overflow-hidden">
+                <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1.5, ease: "easeOut" }} className="h-full bg-brand-copper rounded-full" />
+              </div>
+              <div className="text-sm font-bold text-brand-copper w-10 text-right">{pct}%</div>
             </div>
-            <div className="text-sm font-bold text-brand-copper w-10 text-right">{pct}%</div>
           </div>
         </div>
 
-        <div className="text-center mt-8">
+        <div className="text-center mt-8 flex flex-col items-center gap-4">
+          <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold tracking-widest uppercase text-brand-graphite dark:text-brand-bone hover:text-brand-copper dark:hover:text-brand-copper transition-colors">
+            <ArrowLeft className="w-4 h-4" /> Volver al inicio
+          </Link>
           <button 
             onClick={() => {
               setCurrentSlide(0);
@@ -423,7 +444,7 @@ export default function ScorecardPage() {
         
         <AnimatePresence mode="wait">
           {currentSlide === -1 && renderIntro()}
-          {currentSlide >= 0 && currentSlide < questions.length && !isCalculating && renderQuestion(currentSlide)}
+          {currentSlide >= 0 && currentSlide < questions.length && !isCalculating && !showResults && renderQuestion(currentSlide)}
           {isCalculating && renderCalculating()}
           {showResults && renderResults()}
         </AnimatePresence>
