@@ -87,7 +87,7 @@ export function Hero() {
                   {/* Testimonial / Social Proof overlay */}
                   <div className="absolute bottom-6 left-6 right-6 bg-brand-bone/90 dark:bg-brand-graphite/90 backdrop-blur-md p-6 border-l-4 border-brand-copper shadow-lg">
                     <p className="text-sm italic text-brand-graphite dark:text-brand-bone mb-3">
-                      &quot;El diagnóstico preliminar nos ahorró miles de dólares en pisos que iban a ser instalados sobre una carpeta calcárea con humedad residual.&quot;
+                      &quot;Cota Cero empieza donde otros no miran. El diagnóstico preliminar detectó humedad residual en la carpeta y nos evitó una instalación que iba a fallar desde el día uno.&quot;
                     </p>
                     <div className="flex items-center gap-2">
                        <div className="w-8 h-8 rounded-full bg-brand-copper/20 flex items-center justify-center text-xs font-bold text-brand-copper">MA</div>
